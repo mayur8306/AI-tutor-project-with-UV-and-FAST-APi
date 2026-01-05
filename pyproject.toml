@@ -1,0 +1,17 @@
+[project]
+name = "project1"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "email-validator>=2.3.0",
+    "langchain>=1.1.0",
+    "langchain-groq>=1.1.0",
+    "langchain-openai>=1.1.0",
+    "langgraph>=1.0.4",
+    "passlib[bcrypt]>=1.7.4",
+    "python-dotenv>=1.2.1",
+    "python-jose>=3.5.0",
+    "sqlalchemy>=2.0.45",
+]

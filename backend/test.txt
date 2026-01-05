@@ -1,0 +1,216 @@
+# from fastapi import FastAPI
+# from pydantic import BaseModel
+# from dotenv import load_dotenv
+# import os
+# from langchain_groq import ChatGroq
+# from langchain_core.messages import (
+#     SystemMessage,
+#     HumanMessage,
+#     AIMessage,
+# )
+
+# # ✅ Load environment variables
+# load_dotenv(override=True)
+
+# groq_key = os.getenv("GROQ_API_KEY")
+# print("GROQ key starts with:", (groq_key[:10] if groq_key else "NOT SET"))
+
+
+# def load_notes_style(path: str) -> str:
+#     """Load style text from a file, or return empty string if missing."""
+#     if not os.path.exists(path):
+#         print(f"[WARN] Style file not found: {path}")
+#         return ""
+#     with open(path, "r", encoding="utf-8") as f:
+#         return f.read()
+
+
+# def choose_temperature(user_input: str) -> float:
+#     """Choose temperature based on type of question."""
+#     text = user_input.lower()
+
+#     # Debugging / error-type questions
+#     if any(k in text for k in ["error", "traceback", "exception", "bug", "fix", "crash", "segmentation fault", "segfault"]):
+#         return 0.1
+
+#     # DSA / algorithms
+#     if any(k in text for k in [
+#         "dsa", "time complexity", "space complexity", "big o",
+#         "stack", "queue", "linked list", "tree", "graph",
+#         "dfs", "bfs", "binary search", "sorting",
+#         "recursion", "dynamic programming", "dp"
+#     ]):
+#         return 0.2
+
+#     # Concept / theory / explanation
+#     if any(k in text for k in ["explain", "what is", "why", "how does", "difference between", "concept", "theory"]):
+#         return 0.25
+
+#     # Project / creative
+#     if any(k in text for k in ["project", "game", "pygame", "gui", "tkinter", "idea", "app"]):
+#         return 0.4
+
+#     # Default
+#     return 0.2
+
+
+# def detect_language(user_input: str, current_lang: str | None) -> str:
+#     """
+#     Detect whether user wants C or Python based on the text.
+#     - Commands: /c, /cprog, /py, /python
+#     - Phrases: 'in c', 'in c language', 'in python'
+#     Default: C
+#     """
+#     text = user_input.lower().strip()
+
+#     # Explicit mode commands
+#     if text.startswith("/c"):
+#         return "c"
+#     if text.startswith("/py") or text.startswith("/python"):
+#         return "python"
+
+#     # Phrases inside question
+#     if " in python" in text or " python " in text or text.endswith(" in python"):
+#         return "python"
+#     if " in c" in text or " in c language" in text or text.endswith(" in c"):
+#         return "c"
+
+#     # If user mentions 'python' strongly
+#     if "python code" in text or "python program" in text:
+#         return "python"
+#     if "c code" in text or "c program" in text:
+#         return "c"
+
+#     # No clear language → keep previous if set, else default to C
+#     return current_lang or "c"
+
+# model = ChatGroq(
+#         model="llama-3.1-8b-instant",
+#         temperature=0.2,
+#     )
+
+
+
+#     # 🧠 System prompt: knows BOTH C and Python styles
+# system_text = (
+#         "You are a beginner-friendly programming and DSA tutor for a first-year student.\n"
+#         "You can answer in C or Python, depending on what the user asks for.\n"
+#         "You must follow the STYLE of the reference notes below, but do not copy them word for word.\n\n"
+#         "===== C DSA STYLE REFERENCE (DO NOT REPEAT VERBATIM) =====\n"
+#         f"{c_style}\n"
+#         "==========================================================\n\n"
+#         "===== PYTHON DSA STYLE REFERENCE (DO NOT REPEAT VERBATIM) =====\n"
+#         f"{py_style}\n"
+#         "===============================================================\n\n"
+#         "Language rules:\n"
+#         "- If the user explicitly asks for Python (or uses words like 'python', '/py'), answer in Python and follow the Python style.\n"
+#         "- If the user explicitly asks for C (or uses words like 'in c', '/c'), answer in C and follow the C style.\n"
+#         "- If the user does not specify a language, default to C.\n\n"
+#         "Answer rules:\n"
+#         "- Use very simple language, like explaining to a beginner.\n"
+#         "- For coding questions:\n"
+#         "    1) Give a short explanation (3–6 lines).\n"
+#         "    2) Then give the FULL code in a single code block.\n"
+#         "    3) Use the style that matches the chosen language (C style or Python style above).\n"
+#         "    4) If it is an algorithm/DSA problem, mention time and space complexity at the end.\n"
+#         "- Finish with a short 'In short: ...' summary.\n"
+#         "- If you are not sure what the user wants, ask a short clarifying question.\n"
+#     )
+
+
+# def main():
+#     # Base model (we will adjust temperature per question)
+
+
+#     # Load style references
+#     c_style = load_notes_style("notes.txt")
+#     py_style = load_notes_style("python.txt")
+
+
+
+#     history = [
+#         SystemMessage(content=system_text)
+#     ]
+
+  
+
+#     print("Welcome! I am your C/Python DSA assistant. Type 'quit' to exit.")
+#     print("Tip: you can say 'in C' or 'in Python', or use /c or /py to switch language.\n")
+
+#     while True:
+#         user_input = input("\nYou: ").strip()
+#         if user_input.lower() in ["exit", "quit"]:
+#             print("Goodbye!")
+#             break
+
+#         # 🔎 Detect language preference based on this message
+#         current_lang = detect_language(user_input, current_lang)
+
+#         # 🎚 Choose temperature
+#         temp = choose_temperature(user_input)
+#         model.temperature = temp
+
+#         print(f"\n[Language: {current_lang.upper()} | Temperature: {temp}]")
+
+#         # You can also explicitly tell the model current language inside the user message
+#         # so it's super clear, without changing the whole system message.
+#         if current_lang == "python":
+#             conditioned_input = f"(Language: Python) {user_input}"
+#         else:
+#             conditioned_input = f"(Language: C) {user_input}"
+
+#         history.append(HumanMessage(content=conditioned_input))
+
+#         ai_msg = model.invoke(history)
+
+#         print("\nAssistant:\n")
+#         print(ai_msg.content)
+
+#         history.append(AIMessage(content=ai_msg.content))
+
+
+
+# app = FastAPI(title="C/Python Tutor API")
+
+# class ChatRequest(BaseModel):
+#     message: str
+
+# class ChatResponse(BaseModel):
+#     reply: str
+
+
+# @app.post("/chat", response_model=ChatResponse)
+# def chat(req: ChatRequest):
+#     global current_lang
+
+#     # detect language
+#     current_lang = None
+
+#     # choose temperature
+#     temp = choose_temperature(req.message)
+
+#     # DO NOT mutate model directly (safe approach)
+#     local_model = ChatGroq(
+#         model="llama-3.1-8b-instant",
+#         temperature=temp,
+#     )
+
+#     # condition input
+#     if current_lang == "python":
+#         conditioned_input = f"(Language: Python) {req.message}"
+#     else:
+#         conditioned_input = f"(Language: C) {req.message}"
+
+#     messages = [
+#         SystemMessage(content=system_text),
+#         HumanMessage(content=conditioned_input),
+#     ]
+
+#     ai_msg = local_model.invoke(messages)
+
+#     return ChatResponse(reply=ai_msg.content)
+
+
+
+# #if __name__ == "__main__":
+# #    main()

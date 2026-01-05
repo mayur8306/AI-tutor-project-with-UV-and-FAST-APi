@@ -1,0 +1,91 @@
+// ====== DSA C CODE STYLE GUIDE (MAYUR) ======
+
+// General rules:
+// - Use C language with stdio.h, conio.h, sometimes stdlib.h
+// - Use #define MAX for array sizes
+// - Use global variables for stack, queue, etc.
+// - Use simple loops and if-else, no pointers to functions, no fancy stuff
+// - For interactive programs, use clrscr() at start and getch() at end
+// - Often print name and roll number in output header
+// - For data structures like stack/queue, use separate functions for push/pop/enqueue/dequeue
+// - Keep variable names simple: i, j, val, num, front, rear, top, etc.
+
+//Example 1 : Stack reverse using array
+
+#include <stdio.h>
+#include <conio.h>
+#define MAX 5
+
+int stack[MAX];
+int top = -1;
+int flag = 0;
+int x;
+
+void push(int value) {
+    if (top == MAX - 1) {
+        printf("stack overflowed");
+        flag = 1;
+    } else {
+        stack[++top] = value;
+    }
+}
+
+int pop() {
+    if (top == -1) {
+        printf("stack under flowed");
+        flag = 1;
+        return -1;
+    } else {
+        return stack[top--];
+    }
+}
+
+void main() {
+    int n, num, i;
+    clrscr();
+    printf("reverse of a list using stack\n");
+    printf("321_Mayur Gacche\n");
+    printf("enter the number of elements\n");
+    scanf("%d", &n);
+    printf("enter the elements:");
+    for (i = 0; i < n; i++) {
+        scanf("%d", &num);
+        push(num);
+        if (flag == 1) {
+            break;
+        }
+    }
+    if (flag == 0) {
+        for (i = 0; i < n; i++) {
+            printf("%d\n", pop());
+        }
+    }
+    getch();
+}
+
+
+#include<stdio.h> #include<conio.h> #define MAX 100 char stack[MAX]; int top=-1; void push(char s1){ if(top==MAX-1){ printf("stack overflow"); }else{ stack[++top]=s1; } } char pop(){ if(top==-1){ printf("stack is empty"); return-1; }else{ return stack[top--]; } } int main(){ char exp[MAX]; int i; char ch; clrscr(); printf("Paranthesis Checker\n"); printf("321_Mayur Gacche\n"); printf("enter the expression:"); printf(“%s”,exp); for(i=0; exp[i] != '\0'; i++){ if(exp[i]=='('||exp[i]=='['||exp[i]=='{'){ push(exp[i]); } else if(exp[i]==')'|| exp[i]==']'||exp[i]=='}'){ if(top==-1){ printf("unbalanced equation"); getch(); return 0; } ch=pop(); if((ch=='('&&exp[i]!=')')|| (ch=='['&&exp[i]!=']')|| (ch=='{'&&exp[i]!='}')){ printf("unbalaced equation"); getch(); return 0; } } } if (top==-1){ printf("balanced equation\n"); }else { printf("unbalanced equation\n"); } getch(); return 0; }
+
+
+
+
+
+#include <stdio.h> #include <conio.h> #include <stdlib.h> #define MAX 100 int queue[MAX]; int front = -1, rear = -1; void enqueue(int val) { if (rear == MAX - 1) { printf("\nQueue Overflow!"); } else { if (front == -1) front = 0; queue[++rear] = val; } } int dequeue() { if (front == -1) { printf("\nQueue Underflow!"); return -1; } else { int val = queue[front]; if (front == rear){ front = rear = -1; } else { front++; } return val; } } void display() { int i; if (front == -1) { printf("\nQueue is Empty!"); } else { printf("\nQueue elements: "); for (i = front; i <= rear; i++) { printf("%d ", queue[i]); } } } int main() { int choice, val; clrscr(); while (1) { printf("\nMayur_Gacche_321"); printf("\nMenu Driven Program for Queue"); printf("\n1. Insert an element "); printf("\n2. Delete an element "); printf("\n3. Display the queue "); printf("\n4. EXIT"); printf("\nEnter your option: "); scanf("%d", &choice); switch (choice) { case 1: printf("Enter the number to be inserted in the queue: "); scanf("%d", &val); enqueue(val); break; case 2: val = dequeue(); if (val != -1) printf("Deleted element is: %d\n", val); break; case 3: display(); break; case 4: exit(0); default: printf("\nInvalid Choice!"); } } getch(); return 0; }
+
+
+#include <stdio.h> #include<conio.h> #include <stdlib.h> struct node { int data; struct node *next; }; struct node *start = NULL; void insert_beginning() { struct node *new_node; int val; new_node = (struct node*) malloc(sizeof(struct node)); if (new_node == NULL) { printf("\nOVERFLOW"); return; } printf("Enter value to insert: "); scanf("%d", &val); new_node->data = val; new_node->next = start; start = new_node; printf("Node inserted at beginning.\n"); } void delete_end() { struct node *ptr, *preptr; if (start == NULL) { printf("\nUNDERFLOW list empty\n"); return; } if (start->next == NULL) { free(start); start = NULL; printf("Last node deleted.\n"); return; } ptr = start; while (ptr->next != NULL) { preptr = ptr; ptr = ptr->next; } preptr->next = NULL; free(ptr); printf("Last node deleted.\n"); } void display() { struct node *ptr = start; if (ptr == NULL) { printf("\nList is empty.\n"); return; } printf("Linked list: "); while (ptr != NULL) { printf("%d ", ptr->data); ptr = ptr->next; } printf("\n"); } void main() { int choice; clrscr(); while (1) { printf("\nMayur_Gacche_321"); printf("\nMenu driven programme for Linked List \n"); printf("1. Insert node at beginning\n"); printf("2. Delete node from end\n"); printf("3. Display linked list\n"); printf("4. Exit\n"); printf("Enter your choice: "); scanf("%d", &choice); switch (choice) { case 1: insert_beginning(); break; case 2: delete_end(); break; case 3: display(); break; case 4: exit(0); default: printf("Invalid choice!\n"); } } getch(); }
+
+
+#include <stdio.h> #include <stdlib.h> #include <conio.h> struct Node { int data; struct Node *left, *right; }; struct Node* createNode(int data) { struct Node* newNode = (struct Node*)malloc(sizeof(struct Node)); newNode->data = data; newNode->left = newNode->right = NULL; return newNode; } struct Node* insert(struct Node* root, int data) { if (root == NULL) { return createNode(data); } if (data < root->data) { root->left = insert(root->left, data); } else if (data > root->data) { root->right = insert(root->right, data); } return root; } void display(struct Node* root, int space) { int i; if (root == NULL) return; space += 5; display(root->right, space); printf("\n"); for (i = 5; i < space; i++) printf(" "); printf("%d", root->data); display(root->left, space); } int main() { struct Node* root = NULL; int n, value, i; clrscr(); printf("Enter number of nodes: "); scanf("%d", &n); printf("Enter %d values:\n", n); for (i = 0; i < n; i++) { scanf("%d", &value); root = insert(root, value); } printf("\nBinary Search Tree (sideways view):\n"); display(root, 0); getch(); return 0; }
+
+
+ #include <stdio.h> #include <stdlib.h> #include <conio.h> struct Node { int data; struct Node* left; struct Node* right; }; struct Node* createNode(int value) { struct Node* newNode = (struct Node*)malloc(sizeof(struct Node)); newNode->data = value; newNode->left = newNode->right = NULL; return newNode; } struct Node* insert(struct Node* root, int value) { if (root == NULL) return createNode(value); if (value < root->data) root->left = insert(root->left, value); else if (value > root->data) root->right = insert(root->right, value); return root; } void printTree(struct Node* root, int space) { int i; if (root == NULL) return;  (i = 0; i < space; i++) printf(" "); // Print node data printf("%d\n", root->data);  if (root->left != NULL || root->right != NULL) { for (int i = 0; i < space; i++) printf(" "); printf("/ \\\n"); } // Recursively print left and right subtrees with increased indentation if (root->left) printTree(root->left, space - 2); if (root->right) printTree(root->right, space + 2); } int main() { struct Node* root = NULL; int n, value; clrscr(); printf("Swapnaj Gharat, 324, Binary Search Tree \n"); printf("Enter the number of elements: "); scanf("%d", &n); printf("Enter %d elements:\n", n); for (int i = 0; i < n; i++) { scanf("%d", &value); root = insert(root, value); } printf("Binary Search Tree structure:\n"); printTree(root, 0); getch(); return 0; }
+    
+ #include <stdio.h> #include<conio.h> #define MAX 100 #define INF 9999 int group[MAX]; int findGroup(int i) { while (group[i] != i) i = group[i]; return i; } void joinGroups(int i, int j) { int a = findGroup(i); int b = findGroup(j); group[a] = b; } int main() { int n, i, j, u, v, totalEdges = 0; int cost[MAX][MAX]; int minCost = 0; int groupU,groupV; clrscr(); printf("Minimum Cost Spanning Tree using Kruskal algorithm\n"); printf("Mayur_Gacche_321\n"); printf("Enter number of vertices: "); scanf("%d", &n); printf("Enter the weight matrix (use 0 if no edge):\n"); for (i = 0; i < n; i++) { for (j = 0; j < n; j++) { scanf("%d", &cost[i][j]); if (cost[i][j] == 0) cost[i][j] = INF; } group[i] = i; } printf("\nEdges in the Minimum Cost Spanning Tree:\n"); while (totalEdges < n - 1) { int min = INF; u = v = -1; for (i = 0; i < n; i++) { for (j = 0; j < n; j++) { if (cost[i][j] < min) { min = cost[i][j]; u = i; v = j; } } } if (u == -1 || v == -1) break; groupU = findGroup(u); groupV = findGroup(v); if (groupU != groupV) { printf("Edge %d - %d : Weight = %d\n", u + 1, v + 1, min); minCost += min; joinGroups(groupU, groupV); totalEdges++; } cost[u][v] = cost[v][u] = INF; } printf("\nTotal cost of MST = %d\n", minCost); getch(); return 0; }
+    
+    #include<stdio.h> #include<stdlib.h> #include<conio.h> int main() { clrscr(); int cost[10][10], visited[10]={0}; int i, j, n, ne=1; int min, mincost=0, u, v; printf("\n"); printf("\n Enter the no of vertices:"); scanf("%d", &n); printf("\n Enter the elements (Adjacency Matrix):\n"); for(i=1; i<=n; i++) { for(j=1; j<=n; j++) { scanf("%d", &cost[i][j]); if(cost[i][j]==0) cost[i][j]=999; } } visited[1]=1; printf("\n The edges considered for MST are \n"); while(ne < n) { for(i=1, min=999; i<=n; i++) { for(j=1; j<=n; j++) { if(cost[i][j] < min) { if(visited[i] != 0) { min = cost[i][j]; u = i; v = j; } } } } if(visited[v] == 0) { printf("\n Edge %d:(%d,%d) cost:%d", ne++, u, v, min); mincost += min; visited[v]=1; } cost[u][v]=cost[v][u]=999; } printf("\n\n Min cost of constructing mst is %d \n", mincost); printf("\nPress Enter key to exit..."); getchar(); getchar(); return 0; }
+
+
+
+
+        

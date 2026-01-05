@@ -1,0 +1,285 @@
+# ===== PYTHON DSA NOTES STYLE (MAYUR) =====
+
+# General rules:
+# - Use simple Python, like for beginners.
+# - Avoid advanced things like list comprehensions, decorators, generators etc. 
+#   unless really needed.
+# - Use clear, small functions for each operation (push, pop, enqueue, etc.).
+# - Keep variable names simple: arr, n, i, j, top, front, rear, root, temp, etc.
+# - Always add small comments to explain main steps.
+# - For I/O, use input() and print().
+# - For main logic, use: 
+#       if __name__ == "__main__":
+#           main()
+# - Try to mirror the logic of C programs:
+#   * Use lists as arrays, stacks, queues.
+#   * Use classes for nodes in linked list and trees.
+# - Focus on understanding, not on shortest/most advanced code.
+
+
+# ======================================================
+# Example 1: Reverse a list using a stack (Python)
+# (same logic as C program using stack + push + pop)
+# ======================================================
+
+def push(stack, value, max_size):
+    """Push value onto stack if not full."""
+    if len(stack) == max_size:
+        print("Stack overflow")
+        return False
+    stack.append(value)
+    return True
+
+def pop(stack):
+    """Pop value from stack if not empty."""
+    if len(stack) == 0:
+        print("Stack underflow")
+        return None
+    return stack.pop()
+
+def reverse_list_using_stack():
+    max_size = 100
+    stack = []
+
+    print("Reverse of a list using stack (Python version)")
+    n = int(input("Enter number of elements: "))
+
+    print("Enter the elements:")
+    for i in range(n):
+        num = int(input())
+        ok = push(stack, num, max_size)
+        if not ok:
+            break
+
+    print("Reversed list:")
+    # pop all elements and print
+    while len(stack) > 0:
+        print(pop(stack))
+
+# ======================================================
+# Example 2: Parenthesis checker using stack (Python)
+# (similar logic to your C parentheses program)
+# ======================================================
+
+def is_balanced_parentheses(expr):
+    stack = []
+    opening = "([{"
+    closing = ")]}"
+
+    for ch in expr:
+        if ch in opening:
+            stack.append(ch)
+        elif ch in closing:
+            if len(stack) == 0:
+                return False
+            top = stack.pop()
+            # matching pairs
+            if (top == '(' and ch != ')') or \
+               (top == '[' and ch != ']') or \
+               (top == '{' and ch != '}'):
+                return False
+
+    # if stack empty => all opened ones were closed
+    return len(stack) == 0
+
+def parentheses_checker():
+    print("Parenthesis Checker (Python)")
+    expr = input("Enter expression: ")
+    if is_balanced_parentheses(expr):
+        print("Balanced expression")
+    else:
+        print("Unbalanced expression")
+
+# ======================================================
+# Example 3: Simple Queue using list (like array queue in C)
+# menu driven program similar to your C queue code
+# ======================================================
+
+def enqueue(queue, value, max_size):
+    if len(queue) == max_size:
+        print("Queue Overflow!")
+        return
+    queue.append(value)
+
+def dequeue(queue):
+    if len(queue) == 0:
+        print("Queue Underflow!")
+        return None
+    # remove from front
+    return queue.pop(0)
+
+def display_queue(queue):
+    if len(queue) == 0:
+        print("Queue is Empty!")
+    else:
+        print("Queue elements:", queue)
+
+def queue_menu():
+    max_size = 100
+    queue = []
+
+    while True:
+        print("\nMayur_Gacche_321")
+        print("Menu Driven Program for Queue (Python)")
+        print("1. Insert an element")
+        print("2. Delete an element")
+        print("3. Display the queue")
+        print("4. Exit")
+
+        choice = int(input("Enter your option: "))
+
+        if choice == 1:
+            val = int(input("Enter the number to be inserted in the queue: "))
+            enqueue(queue, val, max_size)
+        elif choice == 2:
+            val = dequeue(queue)
+            if val is not None:
+                print("Deleted element is:", val)
+        elif choice == 3:
+            display_queue(queue)
+        elif choice == 4:
+            break
+        else:
+            print("Invalid Choice!")
+
+# ======================================================
+# Example 4: Singly Linked List
+# Insert at beginning, delete from end, display
+# (Python version of your C linked list code)
+# ======================================================
+
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def insert_beginning(start, value):
+    new_node = Node(value)
+    new_node.next = start
+    start = new_node
+    print("Node inserted at beginning.")
+    return start
+
+def delete_end(start):
+    if start is None:
+        print("UNDERFLOW list empty")
+        return start
+
+    # if only one node
+    if start.next is None:
+        print("Last node deleted:", start.data)
+        return None
+
+    # more than one node
+    prev = None
+    ptr = start
+    while ptr.next is not None:
+        prev = ptr
+        ptr = ptr.next
+
+    print("Last node deleted:", ptr.data)
+    prev.next = None
+    return start
+
+def display_list(start):
+    if start is None:
+        print("List is empty.")
+        return
+    print("Linked list:", end=" ")
+    ptr = start
+    while ptr is not None:
+        print(ptr.data, end=" ")
+        ptr = ptr.next
+    print()
+
+def linked_list_menu():
+    start = None
+    while True:
+        print("\nMayur_Gacche_321")
+        print("Menu driven program for Linked List (Python)")
+        print("1. Insert node at beginning")
+        print("2. Delete node from end")
+        print("3. Display linked list")
+        print("4. Exit")
+        choice = int(input("Enter your choice: "))
+
+        if choice == 1:
+            val = int(input("Enter value to insert: "))
+            start = insert_beginning(start, val)
+        elif choice == 2:
+            start = delete_end(start)
+        elif choice == 3:
+            display_list(start)
+        elif choice == 4:
+            break
+        else:
+            print("Invalid choice!")
+
+# ======================================================
+# Example 5: Binary Search Tree (BST) insert + display (inorder)
+# similar logic to your C tree programs
+# ======================================================
+
+class TreeNode:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+def insert_bst(root, value):
+    if root is None:
+        return TreeNode(value)
+    if value < root.data:
+        root.left = insert_bst(root.left, value)
+    elif value > root.data:
+        root.right = insert_bst(root.right, value)
+    return root
+
+def inorder(root):
+    if root is not None:
+        inorder(root.left)
+        print(root.data, end=" ")
+        inorder(root.right)
+
+def bst_demo():
+    root = None
+    n = int(input("Enter number of nodes: "))
+    print("Enter", n, "values:")
+    for i in range(n):
+        val = int(input())
+        root = insert_bst(root, val)
+
+    print("Inorder traversal of BST:")
+    inorder(root)
+    print()
+
+# ======================================================
+# Example main() to call any of these demos
+# ======================================================
+
+def main():
+    print("Python DSA Demo - choose which program to run")
+    print("1. Reverse list using stack")
+    print("2. Parenthesis checker")
+    print("3. Queue menu")
+    print("4. Linked list menu")
+    print("5. BST demo")
+    choice = int(input("Enter choice: "))
+
+    if choice == 1:
+        reverse_list_using_stack()
+    elif choice == 2:
+        parentheses_checker()
+    elif choice == 3:
+        queue_menu()
+    elif choice == 4:
+        linked_list_menu()
+    elif choice == 5:
+        bst_demo()
+    else:
+        print("Invalid choice")
+
+if __name__ == "__main__":
+    main()
+
+# ===== End of Python DSA Notes Style =====

@@ -1,0 +1,22 @@
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Environment variables (API KEYS)
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Databases
+*.db
+
+# IDE / tools
+.vscode/
+.python-version
+
+# OS
+.DS_Store
+Thumbs.db
