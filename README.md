@@ -66,5 +66,3 @@ This project reflects:
 
 ---
 
-## 🗂 Project Structure (High-Level)
-
